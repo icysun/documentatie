@@ -36,224 +36,378 @@ import Summary from "./summaries/_1.3.1-summary.md";
 
 <Summary />
 
-### Waarom is dit belangrijk?
+Als de visuele opmaak wegvalt, bijvoorbeeld door het laden van een andere stylesheet, moet de informatie nog steeds beschikbaar zijn. Dat kan alleen als de HTML semantisch is opgebouwd: gebruik de juiste HTML-elementen voor hun bedoelde doel.
 
-Wanneer content op een bepaalde manier wordt opgemaakt of gestructureerd, moet de betekenis daarvan ook duidelijk zijn voor hulpsoftware. Dit helpt mensen die de pagina niet kunnen zien om de inhoud toch goed te begrijpen. Als de visuele opmaak om welke reden dan ook wegvalt, moet de informatie nog steeds aanwezig zijn in HTML. Denk bijvoorbeeld aan het laden van een andere stylesheet.
+Dit succescriterium omvat zes thema's: semantiek, koppen, lijsten, tabellen, labels en visuele presentatie.
 
-Voorbeelden voor contentmakers:
+## Veelgemaakte fouten
 
-- Koppen zien er anders uit dan gewone tekst.
-- Lijsten zijn herkenbaar aan bullets.
-- Tabellen hebben een koprij die er anders uitziet.
-- Alinea's zijn gescheiden door witruimte.
-- Citaten staan cursief.
+### Fout: semantische rol van een element is overschreven
 
-Voorbeelden voor webontwikkelaars:
+Sommige HTML-elementen overschrijven de rollen van onderliggende elementen. Als een kop in een `<button>` staat, verdwijnt de rol van kop. De informatiestructuur klopt dan niet meer.
 
-- Een label staat dicht bij het bijbehorende invoerveld.
-- De actieve link in het menu heeft een ander uiterlijk.
-- De relatie tussen links in een menu is duidelijk.
+```html
+<!-- Fout: de h3 verliest zijn rol door de button -->
+<button>
+  <h3>Veelgestelde vragen</h3>
+</button>
 
-Dit succescriterium omvat zes thema's.
+<!-- Goed: de button staat binnen de h3 -->
+<h3>
+  <button aria-expanded="false" aria-controls="paneel-1">Veelgestelde vragen</button>
+</h3>
+```
 
-## Semantiek: gebruik HTML-elementen volgens hun betekenis
+### Fout: semantische rol is verwijderd met ARIA
 
-Een webpagina bestaat uit HTML-elementen. Sommige elementen hebben een semantische betekenis. Ze geven aan welke rol de inhoud heeft op de pagina.
+Een `role="presentation"` of `role="none"` op een element verwijdert de standaardrol. Een kop wordt dan gewone tekst. Een `<ul>` met `role="navigation"` verliest de rol van lijst, waardoor de `<li>`-elementen geen correcte container meer hebben.
 
-Voorbeelden van semantische elementen:
+```html
+<!-- Fout: kop verliest zijn rol -->
+<h2 role="presentation">Contactgegevens</h2>
 
-- `<h1>` t/m `<h6>` voor koppen
-- `<ul>` en `<ol>` voor lijsten
-- `<strong>` en `<em>` voor nadruk
-- `<table>` voor tabellen
-- `<blockquote>` en `<q>` voor citaten
+<!-- Fout: lijst verliest zijn rol -->
+<ul role="navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/over-ons">Over ons</a></li>
+</ul>
 
-Gebruik deze elementen alleen waarvoor ze bedoeld zijn.
+<!-- Goed: nav om de lijst heen, lijst behoudt zijn rol -->
+<nav aria-label="Hoofdnavigatie">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/over-ons">Over ons</a></li>
+  </ul>
+</nav>
+```
 
-### Veelgemaakte fouten bij semantische elementen
+### Fout: semantisch element gebruikt voor opmaak
 
-#### Fout: semantische rol is overgeschreven door een ander element
+Elementen als `<strong>` en `<em>` worden soms alleen voor visuele opmaak gebruikt, niet voor nadruk. Gebruik CSS voor opmaak en semantische elementen voor hun bedoelde betekenis.
 
-Als een kop in een accordion in een button-element staat, verdwijnt de rol van kop en klopt de informatiestructuur niet meer. Houd er rekening mee dat sommige elementen de rollen van onderliggende elementen kunnen overschrijven.
+```html
+<!-- Fout: strong alleen voor opmaak -->
+<p><strong>Adresgegevens</strong></p>
+<p>Kerkstraat 1, Utrecht</p>
 
-#### Fout: semantische rol is verdwenen
+<!-- Goed: als het een kop is, gebruik een kop-element -->
+<h3>Adresgegevens</h3>
+<p>Kerkstraat 1, Utrecht</p>
+```
 
-De semantische rol van een element kan verdwijnen door verkeerd gebruik van ARIA. Als `role="presentation"` of `role="none"` aan een element wordt toegevoegd, verdwijnt de standaardrol van dat element. Een kop met deze rol wordt bijvoorbeeld gewone tekst. Een lijst (ul) met `role="navigation"` verliest de rol van lijst, waardoor de li-elementen geen correcte container meer hebben.
+### Fout: kopniveaus kloppen niet
 
-#### Fout: semantisch element is niet correct gebruikt
+De niveaus van koppen in headers, footers, sidebars of andere vaste onderdelen zijn niet logisch geprogrammeerd. Een screenreader leest de relatie tussen onderdelen dan verkeerd voor. Er mogen geen kopniveaus worden overgeslagen.
 
-Een `<strong>` of een `<em>` element wordt soms gebruikt voor opmaak om tekst opvallend te maken. Deze elementen zijn daar niet voor bedoeld.
-
-## Koppen: markeer ze correct in de code
-
-Tekst die er anders uitziet dan de rest en iets vertelt over de inhoud eronder, is meestal een kop. Markeer deze tekst als kop in de HTML.
-
-Voor webontwikkelaars: controleer de koppen in megamenu's, zijkolommen, dialoogvensters, de footer en widgets. Inspecteer de Accessibility Tree. Een kop moet de rol "heading" hebben met het juiste niveau.
-
-Voor webredactie: lees meer over koppen op [Koppen op NLDS](https://documentatie-git-132summary-nl-design-system.vercel.app/richtlijnen/content/tekstopmaak/koppen/).
-
-Zie onze [Heading-component](https://nldesignsystem.nl/heading/).
-
-### Veelgemaakte fouten bij koppen
-
-#### Fout: het niveau van koppen klopt niet
-
-Het niveau van koppen in headers, footers, sidebars of andere vaste onderdelen is niet logisch of betekenisvol geprogrammeerd. De relatie tussen contentonderdelen wordt daardoor onjuist voorgelezen.
-
-#### Fout: kop mist de juiste markering
-
-Tekst die inhoudelijk een kop is, is niet als kop gemarkeerd in de code. Dit maakt de structuur van de tekst onlogisch en maakt het navigeren van kop naar kop onmogelijk.
-
-#### Fout: kop-element onjuist gebruikt
-
-Tekst die geen kop is, zoals een call-to-action aan het einde van een pagina, is toch gemarkeerd als een kop. Als er geen inhoud onder staat, mag geen kop-element worden gebruikt.
-
-### Lijsten: markeer ze als lijst in de code
-
-Staan gegevens in een lijst? Gebruik dan ook in de HTML een lijstelement (ul of ol) en niet alleen streepjes of sterretjes voor de items. Hulpsoftware kan dan aangeven dat het om een lijst gaat, hoeveel items de lijst heeft en bij welk item de gebruiker zich bevindt.
-Lees meer over [Lijsten op NLDS](https://nldesignsystem.nl/richtlijnen/content/tekstopmaak/opsommingen/#lijst-elementen).
-
-#### Veelgemaakte fouten bij lijsten
-
-#### Fout: lijst mist de juiste markering
-
-Content die visueel als lijst wordt getoond, mist de juiste HTML-markering (ul/ol en li-elementen). Een schermlezer kan niet voorlezen dat het om een lijst gaat en uit hoeveel items deze bestaat. Een dl-lijst (definitielijst) is niet correct opgebouwd in de code. Let wel op dat dit element niet goed wordt ondersteund door schermlezers.
-
-#### Fout: geneste lijst mist de juiste markering
-
-Een lijst binnen een lijst heeft geen correcte HTML-structuur. Een schermlezer kan de relatie tussen de geneste lijst en de hoofdlijst niet correct voorlezen.
-
-#### Fout: lijst bevat inhoud die niet is toegestaan
-
-Een lijstelement bevat onderliggende elementen die niet zijn toegestaan. Een schermlezer kondigt alleen het aantal li-elementen aan. Andere elementen worden wel voorgelezen, wat verwarrend is.
-
-#### Fout: content die inhoudelijk geen lijst is, is toch als lijst gemarkeerd
-
-Bijvoorbeeld: platte tekst wordt in een kolom weergegeven en daarom in een ul-element geplaatst. Deze tekst wordt dan onterecht als een lijst voorgelezen.
-
-#### Fout: heading-elementen zijn geplaatst binnen een lijst (ul of li-elementen)
-
-Dit botst met de semantische rollen van deze elementen en maakt de structuur van informatie onduidelijk.
-
-### Datatabellen: maak de structuur en relaties duidelijk
-
-Bij datatabellen moet hulpsoftware kunnen begrijpen hoe de tabel is opgebouwd en welke relatie de cellen met elkaar hebben.
-
-Zie onze [Tabel-component](https://nldesignsystem.nl/table/).
-
-### Veelgemaakte fouten bij (data)tabellen
-
-#### Fout: datatabellen zijn niet gemarkeerd als tabel in de HTML
-
-Inhoud die in tabelvorm wordt getoond om relaties duidelijk te maken, mist daardoor de juiste markering.
-
-#### Fout: kolomkoppen zijn niet gemarkeerd met de juiste th-elementen
-
-De relatie tussen koppen en onderliggende cellen is visueel duidelijk, maar ontbreekt in de HTML. Soms worden th-elementen gebruikt waar td-elementen nodig zijn.
-
-#### Fout: tabellen zijn gemaakt met CSS, witruimte of br-elementen om tekst in kolommen te zetten
-
-Als CSS wordt uitgeschakeld of de lay-out verandert, verdwijnt de relatie tussen de cellen.
-
-#### Fout: meerdere datatabellen op één pagina hebben geen toegankelijke naam
-
-Gebruikers van een schermlezer kunnen tussen tabellen navigeren, maar zonder een toegankelijke naam is het lastig om het verschil te herkennen. Mogelijke oplossingen zijn: caption, aria-label, aria-labelledby.
-
-#### Fout: tabellen zijn te complex
-
-Tabellen met zowel kolom- als rijkoppen, samengevoegde cellen en tussenkopjes zijn niet toegankelijk te maken. Extra code,zoals scope- en id-attributen, kan helpen om de relatie tussen cellen duidelijker te maken, maar wordt niet door alle browsers goed ondersteund.
-
-Richtlijnen en voorbeelden over [tabellen](https://nldesignsystem.nl/richtlijnen/content/tekstopmaak/tabellen/#tabellen).
-
-### Labels
-
-Elk invoerveld heeft een label nodig dat aangeeft wat moet worden ingevuld of aangevinkt. Het label moet in de code zijn gekoppeld aan het invoerveld, zodat hulpsoftware deze relatie kan begrijpen. Een bijkomend voordeel: het klikgebied wordt groter, wat helpt bij kleine klikdoelen.
-
-### Veelgemaakte fouten bij labels
-
-#### Fout: het label-element is niet gekoppeld aan het bijbehorende input-, select- of textarea-element
-
-De relatie tussen het label en het inputveld ontbreekt in de HTML. Het label wordt niet voorgelezen als het invoerveld focus krijgt.
-
-#### Fout: meerdere labels zijn gekoppeld met één invoerveld
-
-Daardoor wordt verkeerde informatie voorgelezen.
-
-#### Fout: vragen zijn niet gekoppeld aan antwoordopties
-
-Een schermlezer moet de relatie tussen een meerkeuzevraag en de radiobuttons of checkboxes met antwoordopties correct kunnen voorlezen. De vraag werkt als een groepslabel. Dit geldt voor alle groepen radiobuttons of checkboxes.
-
-#### Fout: groepslabels zijn niet gekoppeld aan de groep
-
-Op een webpagina staat een formulier met meerdere secties. Elke sectie heeft een groepslabel, maar deze tekst is in de HTML niet herkenbaar als kop of groepslabel.
-
-De beste oplossing voor groepslabels is een [fieldset en legend](https://nldesignsystem.nl/fieldset/).
-
-### Visuele presentatie
-
-Alle informatie die op een webpagina wordt getoond, moet ook in de HTML aanwezig zijn en niet alleen visueel worden gepresenteerd.
-
-### Veelgemaakte fouten bij visuele presentatie
-
-#### Fout: een voortgangsbalk toont alleen visueel aan bezoekers de voortgang in een proces.
-
-Wanneer deze informatie alleen via CSS wordt weergegeven, ontbreekt deze in de HTML en is de voortgang niet beschikbaar voor schermlezers.
-
-#### Fout: de actieve link in een menu is vaak alleen visueel gemarkeerd, bijvoorbeeld met onderstreping of kleur
-
-Wanneer CSS wordt uitgeschakeld, verdwijnt deze belangrijke navigatie-informatie. Dit geldt ook voor de huidige pagina in een paginering die alleen visueel wordt onderscheiden.
-
-#### Fout: een tabelcel heeft een andere achtergrondkleur om een categorie aan te geven
-
-Deze visuele groepering is niet toegankelijk voor gebruikers van een schermlezer.
-
-#### Fout: in een tag cloud zijn populaire woorden groter weergegeven
-
-Zonder HTML-markup weten schermlezers niet welke woorden vaker voorkomen.
-
-#### Fout: in chatinterfaces is alleen aan de positie van een avatar te zien wie de afzender is
-
-Zonder deze informatie in de HTML is dat niet duidelijk voor schermlezers.
-
-#### Fout: de relatie tussen navigatie-elementen,zoals opties in een combobox of links in een menu, is alleen visueel zichtbaar
-
-Ald deze relatie ontbreekt in de HTML, kan een schermlezer ze niet voorlezen.
-
-#### Fout: een oude prijs en een nieuwe prijs worden op dezelfde manier voorgelezen
-
-Als twee prijzen worden getoond waarbij de oude prijs is doorgestreept, moet dit ook in de HTML staan. Anders is het verschil niet duidelijk voor gebruikers van een schermlezer.
-
-#### Fout: er staan meerdere nav-elementen op de pagina zonder toegankelijke namen
-
-Bijvoorbeeld: op een krantenwebsite staan in de header drie menu’s. Gebruikers van een schermlezer weten niet wat het verschil is tussen deze navigaties.
-
-#### Fout: foutmeldingen in formulieren zijn niet gekoppeld aan de bijbehorende invoervelden
-
-Ze worden daardoor niet op het juiste moment voorgelezen.
-
-#### Fout: instructies zijn niet gekoppeld aan de invoervelden die ze beschrijven
-
-Ze worden niet voorgelezen voordat het veld wordt ingevuld.
+```html
+<!-- Fout: kopniveau overgeslagen -->
+<h1>Paginatitel</h1>
+<h3>Subsectie</h3>
+
+<!-- Goed: logische koppenstructuur -->
+<h1>Paginatitel</h1>
+<h2>Sectie</h2>
+<h3>Subsectie</h3>
+```
+
+### Fout: kop mist de juiste markering
+
+Tekst die inhoudelijk een kop is, is niet als kop gemarkeerd in de code. Screenreadergebruikers navigeren van kop naar kop. Zonder juiste markering is die navigatie onmogelijk.
+
+```html
+<!-- Fout: visueel een kop, maar geen kop-element -->
+<p class="kop-stijl">Onze diensten</p>
+
+<!-- Goed: een echt kop-element -->
+<h2>Onze diensten</h2>
+```
+
+### Fout: kop-element gebruikt voor tekst die geen kop is
+
+Tekst die geen kop is, zoals een call-to-action aan het einde van een pagina, mag niet als kop gemarkeerd worden. Gebruik kop-elementen alleen als er inhoud onder staat die bij de kop hoort.
+
+```html
+<!-- Fout: geen echte kop, alleen groot en opvallend -->
+<h2>Meld je nu aan!</h2>
+
+<!-- Goed: zet inhoud onder de kop -->
+<h2>Meld je nu aan!</h2>
+<p>We verwerken je aanmelding ...</p>
+```
+
+### Fout: lijst mist de juiste markering
+
+Content die visueel als lijst wordt getoond, mist de juiste HTML-markering. Een screenreader kan dan niet voorlezen dat het om een lijst gaat en hoeveel items die heeft.
+
+```html
+<!-- Fout: visueel een lijst, maar geen lijstelementen -->
+<p>- Optie A</p>
+<p>- Optie B</p>
+<p>- Optie C</p>
+
+<!-- Goed: juiste lijstmarkering -->
+<ul>
+  <li>Optie A</li>
+  <li>Optie B</li>
+  <li>Optie C</li>
+</ul>
+```
+
+### Fout: geneste lijst mist de juiste structuur
+
+Een lijst binnen een lijst heeft geen correcte HTML-structuur. Een screenreader kan de relatie tussen de geneste lijst en de hoofdlijst niet voorlezen.
+
+```html
+<!-- Fout: geneste lijst staat buiten het li-element -->
+<ul>
+  <li>Fruit</li>
+  <ul>
+    <li>Appel</li>
+    <li>Peer</li>
+  </ul>
+</ul>
+
+<!-- Goed: geneste lijst binnen het li-element -->
+<ul>
+  <li>
+    Fruit
+    <ul>
+      <li>Appel</li>
+      <li>Peer</li>
+    </ul>
+  </li>
+</ul>
+```
+
+### Fout: content die geen lijst is, is toch als lijst gemarkeerd
+
+Platte tekst die in een kolom wordt weergegeven en daarom in een `<ul>` is geplaatst, wordt onterecht als lijst voorgelezen. Gebruik lijstelementen alleen voor daadwerkelijke opsommingen.
+
+### Fout: datatabellen zijn niet gemarkeerd als tabel
+
+Inhoud die in tabelvorm wordt getoond om relaties duidelijk te maken, mist de juiste tabelmarkering. Bouw tabellen niet na met `<div>`-elementen en CSS.
+
+```html
+<!-- Fout: tabel nagebouwd met divs -->
+<div class="rij">
+  <div class="cel kop">Naam</div>
+  <div class="cel kop">Functie</div>
+</div>
+<div class="rij">
+  <div class="cel">Maria</div>
+  <div class="cel">Designer</div>
+</div>
+
+<!-- Goed: echte tabel met juiste markering -->
+<table>
+  <tr>
+    <th>Naam</th>
+    <th>Functie</th>
+  </tr>
+  <tr>
+    <td>Maria</td>
+    <td>Designer</td>
+  </tr>
+</table>
+```
+
+### Fout: tabelkoppen zijn niet gemarkeerd met th-elementen
+
+De relatie tussen koppen en onderliggende cellen is visueel duidelijk, maar ontbreekt in de HTML. Gebruik `<th>` voor koppen en `<td>` voor datacellen.
+
+```html
+<!-- Fout: koppen als td -->
+<table>
+  <tr>
+    <td><strong>Dag</strong></td>
+    <td><strong>Openingstijden</strong></td>
+  </tr>
+  <tr>
+    <td>Maandag</td>
+    <td>09:00 - 17:00</td>
+  </tr>
+</table>
+
+<!-- Goed: koppen als th met scope -->
+<table>
+  <tr>
+    <th scope="col">Dag</th>
+    <th scope="col">Openingstijden</th>
+  </tr>
+  <tr>
+    <td>Maandag</td>
+    <td>09:00 - 17:00</td>
+  </tr>
+</table>
+```
+
+### Fout: meerdere datatabellen op een pagina zonder toegankelijke naam
+
+Screenreadergebruikers kunnen tussen tabellen navigeren. Zonder een toegankelijke naam is het lastig om tabellen van elkaar te onderscheiden.
+
+```html
+<!-- Fout: tabellen zonder naam -->
+<table>
+  ...
+</table>
+<table>
+  ...
+</table>
+
+<!-- Goed: tabellen met een caption -->
+<table>
+  <caption>
+    Openingstijden hoofdkantoor
+  </caption>
+  ...
+</table>
+<table>
+  <caption>
+    Openingstijden filiaal
+  </caption>
+  ...
+</table>
+```
+
+### Fout: label is niet gekoppeld aan het invoerveld
+
+De relatie tussen het label en het invoerveld ontbreekt in de HTML. Een screenreader leest het label niet voor als het invoerveld focus krijgt.
+
+```html
+<!-- Fout: label niet gekoppeld -->
+<label>E-mailadres</label>
+<input type="email" />
+
+<!-- Goed: label gekoppeld via for en id -->
+<label for="email">E-mailadres</label>
+<input type="email" id="email" />
+```
+
+### Fout: vragen zijn niet gekoppeld aan antwoordopties
+
+Een screenreader moet de relatie tussen een vraag en de bijbehorende radiobuttons of checkboxes correct kunnen voorlezen. De vraag werkt als groepslabel. Gebruik `<fieldset>` en `<legend>` voor de groepering.
+
+```html
+<!-- Fout: vraag niet gekoppeld aan de opties -->
+<p>Hoe wil je benaderd worden?</p>
+<input type="radio" name="contact" id="tel" />
+<label for="tel">Telefoon</label>
+<input type="radio" name="contact" id="mail" />
+<label for="mail">E-mail</label>
+
+<!-- Goed: fieldset en legend koppelen vraag aan opties -->
+<fieldset>
+  <legend>Hoe wil je benaderd worden?</legend>
+  <input type="radio" name="contact" id="tel" />
+  <label for="tel">Telefoon</label>
+  <input type="radio" name="contact" id="mail" />
+  <label for="mail">E-mail</label>
+</fieldset>
+```
+
+### Fout: foutmeldingen zijn niet gekoppeld aan het invoerveld
+
+Foutmeldingen bij formuliervelden worden niet op het juiste moment voorgelezen als ze niet programmatisch aan het veld zijn gekoppeld.
+
+```html
+<!-- Fout: foutmelding niet gekoppeld -->
+<label for="naam">Naam</label>
+<input type="text" id="naam" />
+<p class="fout">Vul je naam in.</p>
+
+<!-- Goed: foutmelding gekoppeld via aria-describedby -->
+<label for="naam">Naam</label>
+<input type="text" id="naam" aria-describedby="fout-naam" aria-invalid="true" />
+<p id="fout-naam" class="fout">Vul je naam in.</p>
+```
+
+### Fout: voortgangsbalk toont voortgang alleen visueel
+
+Als de voortgang in een proces alleen via CSS wordt weergegeven, ontbreekt die informatie in de HTML. Screenreadergebruikers weten dan niet bij welke stap ze zijn.
+
+```html
+<!-- Fout: voortgang alleen visueel -->
+<div class="voortgang">
+  <div class="balk" style="width: 66%;"></div>
+</div>
+
+<!-- Goed: voortgang ook in de HTML -->
+<div role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" aria-label="Voortgang: stap 2 van 3">
+  <div class="balk" style="width: 66%;"></div>
+</div>
+```
+
+### Fout: actieve pagina in het menu is alleen visueel gemarkeerd
+
+Als de actieve link in een menu alleen visueel verschilt (onderstreping of kleur) en dit niet in de HTML staat, verdwijnt die informatie als CSS wordt uitgeschakeld. Dit geldt ook voor de huidige pagina in een paginering.
+
+```html
+<!-- Fout: alleen visueel gemarkeerd -->
+<nav>
+  <a href="/">Home</a>
+  <a href="/over-ons" class="actief">Over ons</a>
+</nav>
+
+<!-- Goed: ook in de HTML aangegeven -->
+<nav>
+  <a href="/">Home</a>
+  <a href="/over-ons" aria-current="page">Over ons</a>
+</nav>
+```
+
+### Fout: meerdere nav-elementen zonder toegankelijke namen
+
+Als er meerdere navigaties op een pagina staan, weten screenreadergebruikers niet wat het verschil is. Geef elke navigatie een toegankelijke naam.
+
+```html
+<!-- Fout: twee navigaties zonder naam -->
+<nav>...</nav>
+<nav>...</nav>
+
+<!-- Goed: navigaties met een naam -->
+<nav aria-label="Hoofdnavigatie">...</nav>
+<nav aria-label="Footernavigatie">...</nav>
+```
+
+### Fout: doorgestreepte prijs is niet herkenbaar voor screenreaders
+
+Als een oude prijs visueel is doorgestreept maar dit niet in de HTML staat, leest een screenreader beide prijzen op dezelfde manier voor. Het verschil is dan niet duidelijk.
+
+```html
+<!-- Fout: doorstreping alleen visueel -->
+<span style="text-decoration: line-through;">€ 49,99</span>
+<span>€ 29,99</span>
+
+<!-- Goed: visueel verborgen tekst geeft context -->
+<span style="text-decoration: line-through;"> <span class="sr-only">Oude prijs: </span>€ 49,99 </span>
+<span> <span class="sr-only">Nieuwe prijs: </span>€ 29,99 </span>
+```
+
+## Gerelateerde succescriteria
+
+- [SC 1.3.2](https://nldesignsystem.nl/wcag/1.3.2/) — Betekenisvolle volgorde: de leesvolgorde van content.
+- [SC 2.4.6](https://nldesignsystem.nl/wcag/2.4.6/) — Koppen en labels: koppen en labels moeten het onderwerp of doel beschrijven.
+- [SC 4.1.2](https://nldesignsystem.nl/wcag/4.1.2/) — Naam, rol, waarde van interactieve elementen.
 
 ## Hoe te testen
 
-Deze toegankelijkheidsproblemen kunnen worden getest door de Accessibility Tree te lezen. Kennis van de Accessibility Tree is belangrijk om toegankelijke websites te bouwen of leren bouwen.
+### Voor iedereen
 
-In de Accessibility Tree is te zien welke rol elk element heeft. Zo kan worden gecontroleerd of de rollen van elementen koppen en veelvoorkomende fouten op deze pagina ook in de eigen code voorkomen. Of een label is gekoppeld aan een invoerveld kan worden getest door op het label te klikken. Reageert het invoerveld, dan zijn ze met elkaar verbonden.
+1. Bekijk de pagina en let op visuele structuur: koppen, lijsten, tabellen en formulierlabels. Is alles wat je ziet ook logisch als je de opmaak wegdenkt?
+2. Klik op een formulierlabel. Reageert het bijbehorende invoerveld? Dan zijn ze correct gekoppeld.
+3. Lees de pagina met een screenreader. Worden koppen, lijsten en tabellen correct aangekondigd?
 
-De pagina doorlezen met een screenreader is een goede manier om dit succescriterium te testen.
+### Voor developers
 
-Controleer of de HTML semantisch is opgemaakt, zoals bijvoorbeeld:
-
-- **Kopjes** (headings): ziet tekst eruit als een kopje, is deze opgemaakt als HTML-kopje (h1, h2, h3 etc)? En andersom: worden kopjes niet gebruikt om tekst alleen groot te maken?
-- **Lijsten**: is tekst opgemaakt als een genummerde of ongenummerde lijst, is deze in de HTML dan ook opgemaakt als een genummerde (`<ol>`) of ongenummerde lijst (`<ul>`)?
-- **Tabellen** voor het weergeven van data: is het duidelijk welke data precies wordt weergegeven? Bijvoorbeeld door het gebruik van table headings (th’s) en scope.
-
-Test voor formuliervelden:
-
-- Is het label en de description gekoppeld aan het invoerveld?
-- Weet een screenreadergebruiker ook dat een veld verplicht is?
-- Worden fout- en succesmeldingen voorgelezen door een screenreader?
+1. Open de Accessibility Tree in de browser DevTools. Controleer of elk element de juiste rol heeft: koppen als "heading", lijsten als "list", tabelkoppen als "columnheader".
+2. Controleer de koppenstructuur. Worden er niveaus overgeslagen? Gebruik de [HeadingsMap-extensie](https://rumoroso.bitbucket.io/) om de koppenstructuur te visualiseren.
+3. Controleer of alle `<label>`-elementen gekoppeld zijn aan hun invoerveld via `for` en `id`. Zoek naar `<label>` zonder `for`-attribuut.
+4. Controleer groepen radiobuttons en checkboxes. Hebben ze een `<fieldset>` met een `<legend>`?
+5. Controleer foutmeldingen. Zijn ze gekoppeld via `aria-describedby` aan het bijbehorende invoerveld?
+6. Controleer datatabellen. Hebben ze `<th>`-elementen met `scope`? Hebben meerdere tabellen op een pagina een `<caption>`?
+7. Zoek naar `role="presentation"` en `role="none"`. Controleer of daarmee geen belangrijke semantische rollen worden verwijderd.
+8. Controleer of `aria-current="page"` wordt gebruikt voor de actieve pagina in navigatiemenu's.
+9. Gebruik axe DevTools of WAVE voor een eerste scan. Ontbrekende labels, lege koppen en onjuiste tabelstructuren worden automatisch gevonden.
 
 ## Gerelateerde NL Design System-richtlijnen
 
