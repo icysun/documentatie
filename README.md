@@ -30,7 +30,7 @@ Heb je een document dat je wil bijdragen, stuur ons dan een linkje naar die gist
 ## Lokaal draaien van de website
 
 We gebruiken `pnpm` om afhankelijkheden te installeren en de website met Docusaurus te draaien. Zorg dat je dat eerst installeert, dat kan bijvoorbeeld met `npm`.
-Als je hier hulp bij nodig hebt kun je ons op [Slack](https://praatmee.codefor.nl) vinden of even een e-mail sturen
+Heb je hulp nodig? Stel je vraag op [Slack](https://nldesignsystem.nl/slack) of stuur een e-mail naar [info@nldesignsystem.nl](mailto:info@nldesignsystem.nl).
 
 1. Zorg dat je de repository op je computer hebt staan door de geforkte documentatie repository te clonen.
 2. Open de Terminal en zorg dat je in het mapje zit waar de clone is belandt
@@ -75,6 +75,18 @@ Gebaseerd op de blog post van Docusaurus [Upgrading frontend dependencies with c
 Voeg het label `visual regression test` toe aan je pull request om Argos CI aan het werk te zetten. We hebben 5,000 screenshots per maand, verspil geen screenshots als je pull request nog niet klaar is.
 
 [![Covered by Argos Visual Testing](https://argos-ci.com/badge-large.svg)](https://app.argos-ci.com/nl-design-system-ci/nldesignsystem.nl/reference)
+
+## Browsers installeren
+
+Installeer de browsers die nodig zijn voor het testen:
+
+`pnpm install-test-browsers`
+
+## Toegankelijkheidstests
+
+Draai de toegankelijkheidstests:
+
+`pnpm test-a11y`
 
 ## Documentatie toevoegen
 
