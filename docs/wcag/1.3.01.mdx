@@ -20,6 +20,7 @@ keywords:
 
 {/* @license CC0-1.0 */}
 
+import { Guideline } from "@site/src/components/Guideline";
 import { Markdown } from "@site/src/components/Markdown";
 import { WcagHeadingGroup } from "@site/src/components/WcagHeadingGroup";
 import { SpotlightSection } from "@utrecht/component-library-react/dist/css-module";
@@ -46,33 +47,52 @@ Dit succescriterium omvat zes thema's: semantiek, koppen, lijsten, tabellen, lab
 
 Sommige HTML-elementen overschrijven de rollen van onderliggende elementen. Als een kop in een `<button>` staat, verdwijnt de rol van kop. De informatiestructuur klopt dan niet meer.
 
+<Guideline appearance="dont" title="De h3 verliest zijn rol door de button">
+
 ```html
-<!-- Fout: de h3 verliest zijn rol door de button -->
 <button>
   <h3>Veelgestelde vragen</h3>
 </button>
+```
 
-<!-- Goed: de button staat binnen de h3 -->
+</Guideline>
+
+<Guideline appearance="do" title="De button staat binnen de h3">
+
+```html
 <h3>
   <button aria-expanded="false" aria-controls="paneel-1">Veelgestelde vragen</button>
 </h3>
 ```
 
+</Guideline>
+
 ### Fout: semantische rol is verwijderd met ARIA
 
 Een `role="presentation"` of `role="none"` op een element verwijdert de standaardrol. Een kop wordt dan gewone tekst. Een `<ul>` met `role="navigation"` verliest de rol van lijst, waardoor de `<li>`-elementen geen correcte container meer hebben.
 
-```html
-<!-- Fout: kop verliest zijn rol -->
-<h2 role="presentation">Contactgegevens</h2>
+<Guideline appearance="dont" title="Kop verliest zijn rol door role=&quot;presentation&quot;">
 
-<!-- Fout: lijst verliest zijn rol -->
+```html
+<h2 role="presentation">Contactgegevens</h2>
+```
+
+</Guideline>
+
+<Guideline appearance="dont" title="Lijst verliest zijn rol door role=&quot;navigation&quot;">
+
+```html
 <ul role="navigation">
   <li><a href="/">Home</a></li>
   <li><a href="/over-ons">Over ons</a></li>
 </ul>
+```
 
-<!-- Goed: nav om de lijst heen, lijst behoudt zijn rol -->
+</Guideline>
+
+<Guideline appearance="do" title="Nav om de lijst heen, lijst behoudt zijn rol">
+
+```html
 <nav aria-label="Hoofdnavigatie">
   <ul>
     <li><a href="/">Home</a></li>
@@ -81,71 +101,111 @@ Een `role="presentation"` of `role="none"` op een element verwijdert de standaar
 </nav>
 ```
 
+</Guideline>
+
 ### Fout: semantisch element gebruikt voor opmaak
 
 Elementen als `<strong>` en `<em>` worden soms alleen voor visuele opmaak gebruikt, niet voor nadruk. Gebruik CSS voor opmaak en semantische elementen voor hun bedoelde betekenis.
 
+<Guideline appearance="dont" title="Strong alleen voor opmaak">
+
 ```html
-<!-- Fout: strong alleen voor opmaak -->
 <p><strong>Adresgegevens</strong></p>
 <p>Kerkstraat 1, Utrecht</p>
+```
 
-<!-- Goed: als het een kop is, gebruik een kop-element -->
+</Guideline>
+
+<Guideline appearance="do" title="Als het een kop is, gebruik een kop-element">
+
+```html
 <h3>Adresgegevens</h3>
 <p>Kerkstraat 1, Utrecht</p>
 ```
 
+</Guideline>
+
 ### Fout: kopniveaus kloppen niet
 
-De niveaus van koppen in headers, footers, sidebars of andere vaste onderdelen zijn niet logisch geprogrammeerd. Een screenreader leest de relatie tussen onderdelen dan verkeerd voor. Er mogen geen kopniveaus worden overgeslagen.
+De niveaus van koppen in headers, footers, sidebars of andere vaste onderdelen zijn niet logisch geprogrammeerd. Een screenreader leest de relatie tussen onderdelen dan verkeerd voor. Er mogen geen kopniveaus worden overgeslagen wanneer twee koppen zonder inhoud er tussen naast elkaar staan.
+
+<Guideline appearance="dont" title="Kopniveau overgeslagen">
 
 ```html
-<!-- Fout: kopniveau overgeslagen -->
 <h1>Paginatitel</h1>
-<h3>Subsectie</h3>
-
-<!-- Goed: logische koppenstructuur -->
-<h1>Paginatitel</h1>
-<h2>Sectie</h2>
-<h3>Subsectie</h3>
+<h3>Over ons</h3>
 ```
+
+</Guideline>
+
+<Guideline appearance="do" title="Logische koppenstructuur">
+
+```html
+<h1>Paginatitel</h1>
+<h2>Over ons</h2>
+<h3>Onze geschiedenis</h3>
+```
+
+</Guideline>
 
 ### Fout: kop mist de juiste markering
 
 Tekst die inhoudelijk een kop is, is niet als kop gemarkeerd in de code. Screenreadergebruikers navigeren van kop naar kop. Zonder juiste markering is die navigatie onmogelijk.
 
-```html
-<!-- Fout: visueel een kop, maar geen kop-element -->
-<p class="kop-stijl">Onze diensten</p>
+<Guideline appearance="dont" title="Visueel een kop, maar geen kop-element">
 
-<!-- Goed: een echt kop-element -->
+```html
+<p class="kop-stijl">Onze diensten</p>
+```
+
+</Guideline>
+
+<Guideline appearance="do" title="Een echt kop-element">
+
+```html
 <h2>Onze diensten</h2>
 ```
+
+</Guideline>
 
 ### Fout: kop-element gebruikt voor tekst die geen kop is
 
 Tekst die geen kop is, zoals een call-to-action aan het einde van een pagina, mag niet als kop gemarkeerd worden. Gebruik kop-elementen alleen als er inhoud onder staat die bij de kop hoort.
 
-```html
-<!-- Fout: geen echte kop, alleen groot en opvallend -->
-<h2>Meld je nu aan!</h2>
+<Guideline appearance="dont" title="Geen echte kop, alleen groot en opvallend">
 
-<!-- Goed: zet inhoud onder de kop -->
+```html
+<h2>Meld je nu aan!</h2>
+```
+
+</Guideline>
+
+<Guideline appearance="do" title="Zet inhoud onder de kop">
+
+```html
 <h2>Meld je nu aan!</h2>
 <p>We verwerken je aanmelding ...</p>
 ```
+
+</Guideline>
 
 ### Fout: lijst mist de juiste markering
 
 Content die visueel als lijst wordt getoond, mist de juiste HTML-markering. Een screenreader kan dan niet voorlezen dat het om een lijst gaat en hoeveel items die heeft.
 
+<Guideline appearance="dont" title="Visueel een lijst, maar geen lijstelementen">
+
 ```html
-<!-- Fout: visueel een lijst, maar geen lijstelementen -->
 <p>- Optie A</p>
 <p>- Optie B</p>
 <p>- Optie C</p>
+```
 
-<!-- Goed: juiste lijstmarkering -->
+</Guideline>
+
+<Guideline appearance="do" title="Juiste lijstmarkering">
+
+```html
 <ul>
   <li>Optie A</li>
   <li>Optie B</li>
@@ -153,12 +213,15 @@ Content die visueel als lijst wordt getoond, mist de juiste HTML-markering. Een 
 </ul>
 ```
 
+</Guideline>
+
 ### Fout: geneste lijst mist de juiste structuur
 
 Een lijst binnen een lijst heeft geen correcte HTML-structuur. Een screenreader kan de relatie tussen de geneste lijst en de hoofdlijst niet voorlezen.
 
+<Guideline appearance="dont" title="Geneste lijst staat buiten het li-element">
+
 ```html
-<!-- Fout: geneste lijst staat buiten het li-element -->
 <ul>
   <li>Fruit</li>
   <ul>
@@ -166,8 +229,13 @@ Een lijst binnen een lijst heeft geen correcte HTML-structuur. Een screenreader 
     <li>Peer</li>
   </ul>
 </ul>
+```
 
-<!-- Goed: geneste lijst binnen het li-element -->
+</Guideline>
+
+<Guideline appearance="do" title="Geneste lijst binnen het li-element">
+
+```html
 <ul>
   <li>
     Fruit
@@ -179,6 +247,8 @@ Een lijst binnen een lijst heeft geen correcte HTML-structuur. Een screenreader 
 </ul>
 ```
 
+</Guideline>
+
 ### Fout: content die geen lijst is, is toch als lijst gemarkeerd
 
 Platte tekst die in een kolom wordt weergegeven en daarom in een `<ul>` is geplaatst, wordt onterecht als lijst voorgelezen. Gebruik lijstelementen alleen voor daadwerkelijke opsommingen.
@@ -187,8 +257,9 @@ Platte tekst die in een kolom wordt weergegeven en daarom in een `<ul>` is gepla
 
 Inhoud die in tabelvorm wordt getoond om relaties duidelijk te maken, mist de juiste tabelmarkering. Bouw tabellen niet na met `<div>`-elementen en CSS.
 
+<Guideline appearance="dont" title="Tabel nagebouwd met divs">
+
 ```html
-<!-- Fout: tabel nagebouwd met divs -->
 <div class="rij">
   <div class="cel kop">Naam</div>
   <div class="cel kop">Functie</div>
@@ -197,8 +268,13 @@ Inhoud die in tabelvorm wordt getoond om relaties duidelijk te maken, mist de ju
   <div class="cel">Maria</div>
   <div class="cel">Designer</div>
 </div>
+```
 
-<!-- Goed: echte tabel met juiste markering -->
+</Guideline>
+
+<Guideline appearance="do" title="Echte tabel met juiste markering">
+
+```html
 <table>
   <tr>
     <th>Naam</th>
@@ -211,12 +287,15 @@ Inhoud die in tabelvorm wordt getoond om relaties duidelijk te maken, mist de ju
 </table>
 ```
 
+</Guideline>
+
 ### Fout: tabelkoppen zijn niet gemarkeerd met th-elementen
 
 De relatie tussen koppen en onderliggende cellen is visueel duidelijk, maar ontbreekt in de HTML. Gebruik `<th>` voor koppen en `<td>` voor datacellen.
 
+<Guideline appearance="dont" title="Koppen als td met strong">
+
 ```html
-<!-- Fout: koppen als td met strong-->
 <table>
   <tr>
     <td><strong>Dag</strong></td>
@@ -227,8 +306,13 @@ De relatie tussen koppen en onderliggende cellen is visueel duidelijk, maar ontb
     <td>09:00 - 17:00</td>
   </tr>
 </table>
+```
 
-<!-- Goed: koppen als th met scope -->
+</Guideline>
+
+<Guideline appearance="do" title="Koppen als th met scope">
+
+```html
 <table>
   <tr>
     <th scope="col">Dag</th>
@@ -241,20 +325,28 @@ De relatie tussen koppen en onderliggende cellen is visueel duidelijk, maar ontb
 </table>
 ```
 
-### Fout: meerdere datatabellen op een pagina zonder toegankelijke naam
+</Guideline>
+
+### Fout: meerdere datatabellen zonder toegankelijke naam op één pagina
 
 Screenreadergebruikers kunnen tussen tabellen navigeren. Zonder een toegankelijke naam is het lastig om tabellen van elkaar te onderscheiden.
 
-```html
-<!-- Fout: tabellen zonder naam -->
-<table>
-  ...
-</table>
-<table>
-  ...
-</table>
+<Guideline appearance="dont" title="Tabellen zonder naam">
 
-<!-- Goed: tabellen met een caption -->
+```html
+<table>
+  ...
+</table>
+<table>
+  ...
+</table>
+```
+
+</Guideline>
+
+<Guideline appearance="do" title="Tabellen met een caption">
+
+```html
 <table>
   <caption>
     Openingstijden hoofdkantoor
@@ -269,33 +361,47 @@ Screenreadergebruikers kunnen tussen tabellen navigeren. Zonder een toegankelijk
 </table>
 ```
 
+</Guideline>
+
 ### Fout: label is niet gekoppeld aan het invoerveld
 
 De relatie tussen het label en het invoerveld ontbreekt in de HTML. Een screenreader leest het label niet voor als het invoerveld focus krijgt.
 
-```html
-<!-- Fout: label niet gekoppeld -->
-<label>E-mailadres</label>
-<input type="email" />
+<Guideline appearance="dont" title="Label niet gekoppeld aan het invoerveld">
 
-<!-- Goed: label gekoppeld via for en id -->
-<label for="email">E-mailadres</label>
-<input type="email" id="email" />
+```html
+<label>E-mailadres</label> <input type="email" />
 ```
+
+</Guideline>
+
+<Guideline appearance="do" title="Label gekoppeld via for en id">
+
+```html
+<label for="email">E-mailadres</label> <input type="email" id="email" />
+```
+
+</Guideline>
 
 ### Fout: vragen zijn niet gekoppeld aan antwoordopties
 
 Een screenreader moet de relatie tussen een vraag en de bijbehorende radiobuttons of checkboxes correct kunnen voorlezen. De vraag werkt als groepslabel. Gebruik `<fieldset>` en `<legend>` voor de groepering.
 
+<Guideline appearance="dont" title="Vraag niet gekoppeld aan de opties">
+
 ```html
-<!-- Fout: vraag niet gekoppeld aan de opties -->
 <p>Hoe wil je benaderd worden?</p>
 <input type="radio" name="contact" id="tel" />
 <label for="tel">Telefoon</label>
 <input type="radio" name="contact" id="mail" />
 <label for="mail">E-mail</label>
+```
 
-<!-- Goed: fieldset en legend koppelen vraag aan opties -->
+</Guideline>
+
+<Guideline appearance="do" title="Fieldset en legend koppelen vraag aan opties">
+
+```html
 <fieldset>
   <legend>Hoe wil je benaderd worden?</legend>
   <input type="radio" name="contact" id="tel" />
@@ -305,83 +411,124 @@ Een screenreader moet de relatie tussen een vraag en de bijbehorende radiobutton
 </fieldset>
 ```
 
+</Guideline>
+
 ### Fout: foutmeldingen zijn niet gekoppeld aan het invoerveld
 
 Foutmeldingen bij formuliervelden worden niet op het juiste moment voorgelezen als ze niet programmatisch aan het veld zijn gekoppeld.
 
+<Guideline appearance="dont" title="Foutmelding niet gekoppeld aan het invoerveld">
+
 ```html
-<!-- Fout: foutmelding niet gekoppeld -->
 <label for="naam">Naam</label>
 <input type="text" id="naam" />
 <p class="fout">Vul je naam in.</p>
+```
 
-<!-- Goed: foutmelding gekoppeld via aria-describedby -->
+</Guideline>
+
+<Guideline appearance="do" title="Foutmelding gekoppeld via aria-describedby">
+
+```html
 <label for="naam">Naam</label>
 <input type="text" id="naam" aria-describedby="fout-naam" aria-invalid="true" />
 <p id="fout-naam" class="fout">Vul je naam in.</p>
 ```
 
+</Guideline>
+
 ### Fout: voortgangsbalk toont voortgang alleen visueel
 
 Als de voortgang in een proces alleen via CSS wordt weergegeven, ontbreekt die informatie in de HTML. Screenreadergebruikers weten dan niet bij welke stap ze zijn.
 
+<Guideline appearance="dont" title="Voortgang alleen visueel">
+
 ```html
-<!-- Fout: voortgang alleen visueel -->
 <div class="voortgang">
   <div class="balk" style="width: 66%;"></div>
 </div>
+```
 
-<!-- Goed: voortgang ook in de HTML -->
+</Guideline>
+
+<Guideline appearance="do" title="Voortgang ook in de HTML">
+
+```html
 <div role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" aria-label="Voortgang: stap 2 van 3">
   <div class="balk" style="width: 66%;"></div>
 </div>
 ```
 
+</Guideline>
+
 ### Fout: actieve pagina in het menu is alleen visueel gemarkeerd
 
 Als de actieve link in een menu alleen visueel verschilt (onderstreping of kleur) en dit niet in de HTML staat, verdwijnt die informatie als CSS wordt uitgeschakeld. Dit geldt ook voor de huidige pagina in een paginering.
 
+<Guideline appearance="dont" title="Actieve pagina alleen visueel gemarkeerd">
+
 ```html
-<!-- Fout: alleen visueel gemarkeerd -->
 <nav>
   <a href="/">Home</a>
   <a href="/over-ons" class="actief">Over ons</a>
 </nav>
+```
 
-<!-- Goed: ook in de HTML aangegeven -->
+</Guideline>
+
+<Guideline appearance="do" title="Actieve pagina ook in de HTML aangegeven">
+
+```html
 <nav>
   <a href="/">Home</a>
-  <a href="/over-ons" aria-current="page">Over ons</a>
+  <a href="/over-ons" aria-current="page" class="actief">Over ons</a>
 </nav>
 ```
+
+</Guideline>
 
 ### Fout: meerdere nav-elementen zonder toegankelijke namen
 
 Als er meerdere navigaties op een pagina staan, weten screenreadergebruikers niet wat het verschil is. Geef elke navigatie een toegankelijke naam.
 
-```html
-<!-- Fout: twee navigaties zonder naam -->
-<nav>...</nav>
-<nav>...</nav>
+<Guideline appearance="dont" title="Twee navigaties zonder naam">
 
-<!-- Goed: navigaties met een naam -->
+```html
+<nav>...</nav>
+<nav>...</nav>
+```
+
+</Guideline>
+
+<Guideline appearance="do" title="Navigaties met een naam">
+
+```html
 <nav aria-label="Hoofdnavigatie">...</nav>
 <nav aria-label="Footernavigatie">...</nav>
 ```
+
+</Guideline>
 
 ### Fout: doorgestreepte prijs is niet herkenbaar voor screenreaders
 
 Als een oude prijs visueel is doorgestreept maar dit niet in de HTML staat, leest een screenreader beide prijzen op dezelfde manier voor. Het verschil is dan niet duidelijk.
 
-```html
-<!-- Fout: doorstreping alleen visueel -->
-<span style="text-decoration: line-through;">€ 49,99</span>
-<span>€ 29,99</span>
+<Guideline appearance="dont" title="Doorstreping alleen visueel">
 
-<!-- Goed: visueel verborgen tekst geeft context -->
+```html
+<span style="text-decoration: line-through;">€ 49,99</span> <span>€ 29,99</span>
+```
+
+</Guideline>
+
+<Guideline appearance="do" title="Visueel verborgen tekst geeft context">
+
+```html
 <span style="text-decoration: line-through;"> <span class="sr-only">Oude prijs: </span>€ 49,99 </span>
 <span> <span class="sr-only">Nieuwe prijs: </span>€ 29,99 </span>
 ```
+
+</Guideline>
 
 ## Gerelateerde succescriteria
 
