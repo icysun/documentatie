@@ -1,5 +1,12 @@
 # @nl-design-system-unstable/documentation
 
+## 1.10.0
+
+### Minor Changes
+
+- 5911c00: Baseline maart 2026 update.
+- ede8614: Aanpassing baseline omtrent alternatieve versies en instellingen voor persoonlijke voorkeuren.
+
 ## 1.9.0
 
 ### Minor Changes
